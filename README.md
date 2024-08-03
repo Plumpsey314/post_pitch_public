@@ -6,7 +6,7 @@ If you want to learn more about post pitch, go to
 https://www.post-pitch.com/
 
 I want to make the source code for this post-pitch app I created publicly available.
-However, since it is very connected to my firebase account, google cloud account, and amazon account, 
+However, since it is very connected to my firebase account, google cloud account, and amazon account, and I removed all API keys/ID numbers 
 it would be difficult to clone this repository and run the code locally. (feel free to try if you want.)
 
 
