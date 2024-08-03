@@ -1,0 +1,15 @@
+.trivia_choice {
+    font-size: larger;
+}
+
+.correct_choice {
+    font-weight: bold;
+    color: green;
+    background-color: #cfc;
+}
+
+.incorrect_choice {
+    color: #e44;
+    font-weight: lighter;
+    text-decoration: line-through;
+}

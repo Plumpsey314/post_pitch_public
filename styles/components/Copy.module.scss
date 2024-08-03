@@ -1,0 +1,31 @@
+.tooltip {
+    /*style written by chatgpt*/
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#blue_copy {
+    display: none
+}
+
+#black_copy {
+    display: flex
+}
+
+.copy_container:hover {
+    #blue_copy {
+        display: flex
+    }
+    
+    #black_copy {
+        display: none
+    }
+}

@@ -1,0 +1,31 @@
+<!--Not used in the code base, but present because it is a reference to the code in clickfunnels.-->
+<div id="email_address" style="display: none">{{ contact.email_address }}</div>
+<a id="app_pp" class="button_anchor">
+  <button class="app_pp_button">Use The Software</button>
+</a>
+<script>
+	const email = document.getElementById("email_address").innerHTML
+    const url = "https://www.app.post-pitch.com"
+    const anchor = document.getElementById("app_pp")
+    console.log(url + "?email=" + email)
+    anchor.href = url + "?email=" + email
+</script>
+<style>
+	.app_pp_button {
+      	height: 42px;
+      	width: 225px;
+      	font-size: 20px;
+      	font-weight: bold;
+        background-color: #148aff;
+      	color: white;
+        margin: auto;
+      	border: none;
+  	}
+  
+  	.button_anchor {
+      	height: 42px;
+        width: 225px;
+      	display: block;
+    	margin: auto;  
+  	}
+</style>

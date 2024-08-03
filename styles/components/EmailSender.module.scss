@@ -1,0 +1,34 @@
+.oneEmailContainer {
+    border: 1px solid #777;
+    margin: 0 auto;
+    width: 90%;
+}
+
+.lg_btn {
+    width: 105px;
+    height: 40px;
+    padding: 0;
+    margin: auto;
+}
+
+.outline_box {
+    min-height: 50px;
+    border: 1px solid #eee;
+    padding: 5px 15px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.outline_box:hover {
+    .copy {
+        display: inline
+    }
+}
+
+.padded_message {
+    padding: 30px 10px;
+    color: #999;
+    text-align: center;
+}

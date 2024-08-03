@@ -1,0 +1,202 @@
+<html>
+    <head>
+        <style>
+            html {
+                background-color: #eee;
+            }
+            .fw-600 {
+                font-weight: 600;
+            }
+            .start-hidden {
+                visibility: hidden;
+            }
+            .p-tb-15 {
+                padding: 15px 0px;
+                margin: 0px;
+            }
+            .b-t-1-grey {
+                border-top: 1px solid #ccc;
+            }
+            .m-tb-15 {
+                margin: 15px 0px;
+            }
+            .horizontally-centered {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            /*Form*/
+            #wigit-intro-generator {
+                display: flex;
+                flex-direction: column;
+            }
+            #description-text {
+                font-family:Arial;
+                font-weight: 600;
+                font-size: large;
+                color: #0a45ff;
+            }
+            #url-input-container {
+                width: 90%;
+                padding: 0px 20px;
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0px 0px 20px #ccc;
+                background-color: white;
+            }
+            #url-input {
+                width: 100%;
+                height: 80px;
+                border: none;
+                border-radius: 10px;
+
+                box-shadow: none;
+                background-color: white;
+                -webkit-box-shadow: 0 0 0 100px white inset;
+            }
+            ::placeholder {
+               color: #8e95aa;
+               font-family: sans-serif;
+               font-weight: 400;
+               font-size: large;
+            }
+            #url-input-container:focus {
+                outline: none;
+            }
+            #url-input:focus {
+                outline: none;
+            }
+            #generator-submit {
+                width: 50%;
+                height: 50px;
+                font-size: larger;
+                border: 1px solid black;
+                border-radius: 10px;
+                background-color: white;
+                color: black;
+            }
+            #generator-submit:hover {
+                font-weight: 600;
+                border: 1px solid white;
+                background-color: #0a45ff;
+                color: white;
+            }
+
+            /*Email result*/
+            #result-container {
+                height: 0px;
+                display: flex;
+                flex-direction: column;
+            }
+            #result-context {
+                font-size: large;
+                color: #589edc;
+            }
+            #result-body {
+                text-indent: 30px;
+                padding-bottom: 30px;
+            }
+
+            #description-text-small {
+                font-family:Arial;
+                font-weight: 300;
+                color: #8e95aa;
+            }
+        </style>
+    </head>
+    <body>
+        <form id="wigit-intro-generator">
+            <label id="description-text" class="m-tb-15 horizontally-centered">Enter a URL to generate a personalized high-converting email introduction based on the author's blog post. </label>
+            <div id="url-input-container" class="m-tb-15 horizontally-centered">
+                <input id="url-input" type="text" name="textLink" placeholder="Enter any domain or URL">
+                <div id="result-container" class="start-hidden">
+                    <p id="result-context" class="horizontally-centered start-hidden"></p>
+                    <p id="result-email" class="p-tb-15 b-t-1-grey start-hidden">
+                        To:&nbsp;&nbsp;&nbsp;&nbsp;<span class="fw-600"></span>
+                    </p>
+                    <p id="result-subject" class="p-tb-15 b-t-1-grey start-hidden">
+                        Subject:&nbsp;&nbsp;&nbsp;&nbsp;<span class="fw-600"></span>
+                    </p>
+                    <p id="result-body" class="p-tb-15 b-t-1-grey start-hidden"></p>
+                </div>
+            </div>
+            <button id="generator-submit" class="horizontally-centered" type="submit">Generate my Personalized Introduction!</button>
+            <label id="description-text-small" class="m-tb-15 horizontally-centered">
+                For example, post-pitch.com, or post-pitch.com/blog/blogger-outreach-email-templates
+            </label>
+        </form>
+
+    </body>
+
+    <script>
+        function parseUrl(url) {
+            // just checking if the url contains a . in it
+            if (!url.includes('.')) {
+                return "UNACCEPTABLE";
+            }
+            return url;
+        }
+
+        async function getIntroJSON(url){
+            const resPromise = fetch(`https://postpitch-1689574641797.wl.r.appspot.com/email_data_lenient?url=${url}`)
+                .then(response => response.json())
+                .catch(error => {
+                    console.log(error)
+                });
+            const emptyPromise = Promise.resolve({
+                "context": "We're sorry. Your request took too long.",
+                "email": "",
+                "subject": "",
+                "body": "We're sorry. Your request took too long.",
+                "url": url
+            });
+
+            const WAIT_TIME = 120000;
+            const timeoutPromise = new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(emptyPromise);
+                }, WAIT_TIME);
+            });
+
+            return await Promise.race([resPromise, timeoutPromise]);
+        }
+
+        //TODO: later along the line, I want to make sure this API call can not be seen by any user.
+        const form = document.getElementById('wigit-intro-generator');
+        form.addEventListener('submit', async (e) =>{
+            e.preventDefault();
+
+            const rawURL = document.getElementById('url-input').value;
+
+            const formResult = document.getElementById('result-container');
+            const context = document.getElementById('result-context');
+            const email = document.getElementById('result-email');
+            const subject = document.getElementById('result-subject');
+            const emailBody = document.getElementById('result-body');
+
+            formResult.style.visibility='visible';
+            formResult.style.height='auto';
+            const url = parseUrl(rawURL);
+            if (url=="UNACCEPTABLE"){
+                context.style.visibility='visible';
+                context.textContent = "I am sorry, the URL you entered was in the incorrect format."
+            }else{
+                context.style.visibility='visible';
+                email.style.visibility='hidden';
+                subject.style.visibility='hidden';
+                emailBody.style.visibility='hidden';
+
+                context.textContent = "loading personalized intro..."
+                const res = await getIntroJSON(url);
+
+                email.style.visibility='visible';
+                subject.style.visibility='visible';
+                emailBody.style.visibility='visible';
+                context.textContent = "Email introduction for " + url;
+                email.childNodes[1].textContent = res.email
+                subject.childNodes[1].textContent = res.subject
+                emailBody.textContent = res.body?res.body:res.context;
+            }
+        })
+    </script>
+</html>
